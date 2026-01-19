@@ -1,6 +1,9 @@
 spring:
   application:
     name: feature-flag-service
+  docker:
+    compose:
+      file: backend/feature-flag-service/compose.yaml
   datasource:
     url: jdbc:postgresql://localhost:5432/feature_flags
     username: admin
