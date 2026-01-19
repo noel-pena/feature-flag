@@ -15,6 +15,7 @@ out/
 .sts4-cache
 bin/
 
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -39,3 +40,6 @@ build/
 
 # Keep gradle wrapper
 !**/gradle/wrapper/gradle-wrapper.jar
+
+# Mac
+.DS_Store
