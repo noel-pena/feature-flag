@@ -5,7 +5,7 @@ spring:
     compose:
       file: backend/feature-flag-service/compose.yaml
   datasource:
-    url: jdbc:postgresql://localhost:5432/feature_flags
+    url: jdbc:postgresql://localhost:5432/feature_flag_db
     username: admin
     password: password
     driver-class-name: org.postgresql.Driver
