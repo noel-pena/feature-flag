@@ -4,8 +4,10 @@ import com.noelpena.featureflagservice.dto.CreateFeatureFlagRequest
 import com.noelpena.featureflagservice.dto.FeatureFlagResponse
 import com.noelpena.featureflagservice.model.FeatureFlag
 import com.noelpena.featureflagservice.repository.FeatureFlagRepository
+import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
+@Service
 class FeatureFlagService(
     private val repository: FeatureFlagRepository
 ) {

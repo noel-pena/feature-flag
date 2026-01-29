@@ -1,4 +1,25 @@
 package com.noelpena.featureflagservice.controller
 
-class FeatureFlagController {
+import com.noelpena.featureflagservice.dto.CreateFeatureFlagRequest
+import com.noelpena.featureflagservice.dto.FeatureFlagResponse
+import com.noelpena.featureflagservice.service.FeatureFlagService
+import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.CrossOrigin
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.bind.annotation.RestController
+
+@RestController
+@RequestMapping("/api/feature-flags")
+@CrossOrigin(origins = ["http://localhost:3000"])
+class FeatureFlagController(
+    private val service: FeatureFlagService
+) {
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createFlag(@RequestBody request: CreateFeatureFlagRequest): FeatureFlagResponse {
+        return service.createFeatureFlag(request)
+    }
 }
