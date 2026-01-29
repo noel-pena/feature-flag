@@ -1,4 +1,34 @@
 package com.noelpena.featureflagservice.service
 
-class FeatureFlagService {
+import com.noelpena.featureflagservice.dto.CreateFeatureFlagRequest
+import com.noelpena.featureflagservice.dto.FeatureFlagResponse
+import com.noelpena.featureflagservice.model.FeatureFlag
+import com.noelpena.featureflagservice.repository.FeatureFlagRepository
+import org.springframework.transaction.annotation.Transactional
+
+class FeatureFlagService(
+    private val repository: FeatureFlagRepository
+) {
+    @Transactional
+    fun createFeatureFlag(request: CreateFeatureFlagRequest): FeatureFlagResponse {
+        if (repository.findByKey(request.key) != null) {
+            throw IllegalArgumentException("Feature flag with key ${request.key} already exists")
+        }
+
+        val featureFlag = FeatureFlag(
+            key = request.key,
+            description = request.description,
+            isEnabled = request.isEnabled
+        )
+
+        val savedFlag = repository.save(featureFlag)
+
+        return FeatureFlagResponse(
+            id = savedFlag.id!!,
+            key = savedFlag.key,
+            description = savedFlag.description,
+            isEnabled = savedFlag.isEnabled,
+            createdAt = savedFlag.createdAt
+        )
+    }
 }
