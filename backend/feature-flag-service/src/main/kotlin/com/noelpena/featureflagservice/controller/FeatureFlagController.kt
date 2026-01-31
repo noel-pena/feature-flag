@@ -5,6 +5,7 @@ import com.noelpena.featureflagservice.dto.FeatureFlagResponse
 import com.noelpena.featureflagservice.service.FeatureFlagService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.CrossOrigin
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -21,5 +22,10 @@ class FeatureFlagController(
     @ResponseStatus(HttpStatus.CREATED)
     fun createFlag(@RequestBody request: CreateFeatureFlagRequest): FeatureFlagResponse {
         return service.createFeatureFlag(request)
+    }
+
+    @GetMapping
+    fun getAllFlags(): List<FeatureFlagResponse> {
+        return service.getAllFeatureFlags()
     }
 }

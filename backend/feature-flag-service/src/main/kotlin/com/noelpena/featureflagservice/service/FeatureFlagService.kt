@@ -33,4 +33,14 @@ class FeatureFlagService(
             createdAt = savedFlag.createdAt
         )
     }
+
+    fun getAllFeatureFlags(): List<FeatureFlagResponse> {
+        return repository.findAll().map { FeatureFlagResponse(
+            it.id!!,
+            it.key,
+            it.description,
+            it.isEnabled,
+            it.createdAt
+        )}
+    }
 }
