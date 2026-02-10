@@ -1,35 +1,65 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import './App.css';
+import type {FeatureFlag} from './types/FeatureFlag';
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [flags, setFlags] = React.useState<Array<FeatureFlag>>([]);
+    const [loading, setLoading] = React.useState<boolean>(true);
+    const [error, setError] = React.useState<string | null>(null);
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    React.useEffect(() => {
+        fetch('http://localhost:8080/api/feature-flags')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                setFlags(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error("Error fetching flags:", err);
+                setError("Failed to load feature flags.");
+                setLoading(false);
+            });
+    }, []);
+
+    if (loading) return <div>Loading flags...</div>;
+    if (error) return <div style={{ color: 'red' }}>{error}</div>;
+
+    return (
+        <div className="container">
+            <h1>Feature Flags</h1>
+            {flags.length === 0 ? (
+                <p>No flags found.</p>
+            ) : (
+                <table className="flag-table">
+                    <thead>
+                    <tr>
+                        <th>Name (Key)</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {flags.map((flag) => (
+                        <tr key={flag.id}>
+                            <td><code>{flag.key}</code></td>
+                            <td>{flag.description}</td>
+                            <td>
+                  <span className={flag.isEnabled ? "status-on" : "status-off"}>
+                    {flag.isEnabled ? "ENABLED" : "DISABLED"}
+                  </span>
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            )}
+        </div>
+    );
 }
 
-export default App
+export default App;
