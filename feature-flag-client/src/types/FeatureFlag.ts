@@ -1,7 +1,7 @@
 export interface FeatureFlag {
-    id: string;
-    key: string;
-    description: string;
-    isEnabled: boolean;
-    createdAt?: string;
+	id: string;
+	key: string;
+	description: string;
+	isEnabled: boolean;
+	createdAt?: string;
 }
