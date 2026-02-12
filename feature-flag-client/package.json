@@ -10,7 +10,8 @@
     "lint:eslint": "eslint ./src",
     "lint:biome": "biome check --write ./src",
     "format:biome": "biome format --write ./src",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "husky"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.21",
