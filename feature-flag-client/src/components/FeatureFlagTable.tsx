@@ -1,5 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import type { FeatureFlag } from "../types/FeatureFlag.ts";
+import axios from "axios";
 
 export default function FeatureFlagTable() {
 	const {
@@ -8,11 +9,25 @@ export default function FeatureFlagTable() {
 		data: flags,
 	} = useQuery({
 		queryKey: ["featureFlags"],
-		queryFn: () =>
-			fetch("http://localhost:8080/api/feature-flags").then((res) =>
-				res.json(),
-			),
+		queryFn: () => axios.get("http://localhost:8080/api/feature-flags").then((res) => res.data),
 	});
+
+	const queryClient = useQueryClient();
+
+	const featureFlagMutation = useMutation({
+		mutationFn: async (flagId: string) => {
+			const res = await axios.patch(`http://localhost:8080/api/feature-flags/${flagId}/toggle`);
+			return res.data;
+		},
+		onSuccess: async () => {
+			await queryClient.invalidateQueries({queryKey: ["featureFlags"]});
+		},
+		onError: (err) => console.error(err),
+	})
+
+	const toggleFlag = (flagId: string) => {
+		featureFlagMutation.mutate(flagId)
+	}
 
 	if (isPending) return <div>Loading flags...</div>;
 	if (error) return <div style={{ color: "red" }}>{error.message}</div>;
@@ -39,9 +54,13 @@ export default function FeatureFlagTable() {
 								</td>
 								<td>{flag.description}</td>
 								<td>
-									<span className={flag.isEnabled ? "status-on" : "status-off"}>
+									<button
+										onClick={() => toggleFlag(flag.id)}
+										className={flag.isEnabled ? "status-on" : "status-off"}
+										style={{ cursor: 'pointer', border: 'none', fontSize: '1rem' }}
+									>
 										{flag.isEnabled ? "ENABLED" : "DISABLED"}
-									</span>
+									</button>
 								</td>
 							</tr>
 						))}
