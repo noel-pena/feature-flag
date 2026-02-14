@@ -1,6 +1,6 @@
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import type { FeatureFlag } from "../types/FeatureFlag.ts";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import type { FeatureFlag } from "../types/FeatureFlag.ts";
 
 export default function FeatureFlagTable() {
 	const {
@@ -9,25 +9,30 @@ export default function FeatureFlagTable() {
 		data: flags,
 	} = useQuery({
 		queryKey: ["featureFlags"],
-		queryFn: () => axios.get("http://localhost:8080/api/feature-flags").then((res) => res.data),
+		queryFn: () =>
+			axios
+				.get("http://localhost:8080/api/feature-flags")
+				.then((res) => res.data),
 	});
 
 	const queryClient = useQueryClient();
 
 	const featureFlagMutation = useMutation({
 		mutationFn: async (flagId: string) => {
-			const res = await axios.patch(`http://localhost:8080/api/feature-flags/${flagId}/toggle`);
+			const res = await axios.patch(
+				`http://localhost:8080/api/feature-flags/${flagId}/toggle`,
+			);
 			return res.data;
 		},
 		onSuccess: async () => {
-			await queryClient.invalidateQueries({queryKey: ["featureFlags"]});
+			await queryClient.invalidateQueries({ queryKey: ["featureFlags"] });
 		},
 		onError: (err) => console.error(err),
-	})
+	});
 
 	const toggleFlag = (flagId: string) => {
-		featureFlagMutation.mutate(flagId)
-	}
+		featureFlagMutation.mutate(flagId);
+	};
 
 	if (isPending) return <div>Loading flags...</div>;
 	if (error) return <div style={{ color: "red" }}>{error.message}</div>;
@@ -55,9 +60,14 @@ export default function FeatureFlagTable() {
 								<td>{flag.description}</td>
 								<td>
 									<button
+										type="button"
 										onClick={() => toggleFlag(flag.id)}
 										className={flag.isEnabled ? "status-on" : "status-off"}
-										style={{ cursor: 'pointer', border: 'none', fontSize: '1rem' }}
+										style={{
+											cursor: "pointer",
+											border: "none",
+											fontSize: "1rem",
+										}}
 									>
 										{flag.isEnabled ? "ENABLED" : "DISABLED"}
 									</button>
