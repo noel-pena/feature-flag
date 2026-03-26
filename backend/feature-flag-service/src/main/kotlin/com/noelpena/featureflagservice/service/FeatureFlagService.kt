@@ -63,4 +63,12 @@ class FeatureFlagService(
             createdAt = savedFlag.createdAt
         )
     }
+
+    @Transactional(readOnly = true)
+    fun evaluateFlag(key: String): Boolean {
+        val flag = repository.findByKey(key)
+
+        return flag?.isEnabled ?: false
+    }
+
 }
