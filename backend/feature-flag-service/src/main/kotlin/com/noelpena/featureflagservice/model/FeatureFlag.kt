@@ -9,6 +9,7 @@ import jakarta.persistence.Table
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import java.time.Instant
+import java.time.Instant.now
 import java.util.UUID
 
 @Entity
@@ -31,8 +32,8 @@ class FeatureFlag(
 
     @CreationTimestamp
     @Column(updatable = false)
-    var createdAt: Instant? = null
+    var createdAt: Instant? = now()
 
     @UpdateTimestamp
-    var updatedAt: Instant? = null
+    var updatedAt: Instant? = now()
 }
